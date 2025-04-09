@@ -1,0 +1,45 @@
+<?php
+
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(0);
+
+Auth::redirect_if_not_logged();
+Auth::redirect_if_not_allowed("{{table_name}}_list");
+
+$filters = $_REQUEST;
+$filters["limit"] = ( $_REQUEST['limit'] ??  100 );
+  
+$filters = [
+  //"price_gt" => 5000,
+  "date_bt" => date('Y-m-01') . "," . date('Y-m-t'), //"2024-02-03,2024-02-04"
+  //"id_in" => "1,10"
+];
+${{class_name}} = new {{class_name}}();
+$list = ${{class_name}}->list_details($filters);
+$table = DataTable::create(${{class_name}}->to_datatable($list));
+
+$test = ${{class_name}}->list_details($filters);
+
+
+$parameters = [
+  "object" => "{{class_name}}",
+  //"view" => "list",
+  /*
+  "extra_files" => [
+    ["object" => "user", "view" => "form_modal", "var_name" => "form"],
+    ["object" => "user", "view" => "detail_modal", "var_name" => "detail"]
+  ],
+  */
+  "vars" => [
+    "_page_title" => Parameter::get("system_name"),
+    "_page_subtitle" => "Cadastro de {{class_name}}",
+    "_form_name" => "{{table_name}}",
+    "_api" => "{{table_name}}",
+    "_create_modal_text" => "Novo",
+    "_search_modal_text" => "Pesquisar",
+    "_table" => $table,
+    //"_session" => "<pre>" . print_r($_SESSION, true) . "</pre>",
+  ]
+];
+HtmlHelper::load_view($parameters);

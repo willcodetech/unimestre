@@ -1,0 +1,117 @@
+<div class="row">
+  <div class="col">
+    <button type="button" class="btn bg_willcode_blue btn-sm text-white" 
+      onClick='handle_form(this)'
+      data-object="user"
+      data-action="edit_own"
+      data-id="{id}"
+      onClick="handle_form(this);"
+      data-toggle_ajax="modal" 
+      data-target="#form_modal" 
+      data-form="user" 
+      data-modal_text= "Editar Usuário: {login} - {name}"
+      data-api="user" 
+      data-api_action="get_form" 
+      data-mode= "edit_own",
+      data-api_action_get="list_own"
+      data-api_id="{id}"
+      data-method="POST"
+      data-reload="true"
+      data-hide_form="true"
+    >
+      <i class="icon-pencil menu-icon"></i> Editar
+    </button>
+
+    <button type="button" class="btn bg-secondary btn-sm text-dark" 
+      onClick='handle_form(this)'
+      data-object="user"
+      data-action="reset_password_gui"
+      data-id="{id}"
+      onClick= "handle_form(this);"
+      data-toggle_ajax="modal" 
+      data-target="#form_modal" 
+      data-form="user"
+      data-modal_text="Resetar Senha: {login} - {name}"
+      data-api="user"
+      data-api_action="get_form"
+      data-mode="reset_password_gui"
+      data-api_action_get="list_own"
+      data-api_id="{id}"
+      data-method="POST"
+      data-reload="true"
+      data-hide_form="true"
+    >
+      <i class="icon-lock menu-icon"></i> Alterar Senha
+    </button>
+    <hr>
+
+    <div class="table-responsive">
+      <table class="table table-bordered responsive">
+        <tr>
+          <th colspan="2" class="text-center bg-secondary">Meus Dados</th>
+        </tr>
+        <tr>
+          <th>Nome:</th>
+          <td>{name}</td>
+        </tr>
+        <tr>
+          <th>Email:</th>
+          <td>{email}</td>
+        </tr>
+        <tr>
+          <th>Login:</th>
+          <td>{login}</td>
+        </tr>
+        <tr class="{_hide_profile_picture}">
+          <th>Imagem de Perfil: <button type="button" class="btn bg-secondary btn-sm remove_profile_picture" data-id="{id}">Trocar foto</button></th>
+          <td><img src="{profile_picture_url}" height="200" width="200" alt=""></td>
+        </tr>
+        <tr>
+          <th>Perfil:</th>
+          <td>{role}</td>
+        </tr>
+        <!--
+        <tr>
+          <th colspan="2" class="text-center bg-secondary">Minhas Permissões</th>
+        </tr>
+        <tr>
+          <td colspan="2">{permissions}</td>
+        </tr>
+        -->
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  docReady(function(){
+    $(document).on("click", ".remove_profile_picture", function(){
+      let formdata = new FormData();
+      formdata.append(`action`, 'remove_profile_picture');
+      formdata.append(`id`, $(this).data("id"));
+      formdata.append(`api`, `user`);
+
+      let request_parameters = {
+        type: 'POST',
+        link: "/api/",
+        form_data: formdata,
+        reload: true
+      }
+
+      Swal.fire({
+        title: "Remover foto?",
+        html: "A foto de perfil será excluída e não poderá ser ruperada. <br>",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed) {             
+          console.log("remover")
+          custom_ajax(request_parameters);
+
+        }
+      });
+    })
+  })
+</script>

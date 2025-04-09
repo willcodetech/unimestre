@@ -1,0 +1,256 @@
+<style>
+  .dropzone {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+  }
+  .file-preview {
+      margin-top: 10px;
+  }
+  .file-preview-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+  }
+  .file-preview-item img {
+      max-width: 50px;
+      max-height: 50px;
+      margin-right: 10px;
+  }
+  .remove-btn {
+      margin-left: auto;
+      cursor: pointer;
+  }
+</style>
+<div class="modal fade" id="form_modal_file_list" role="dialog" aria-labelledby="form_modal_file_list" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"><span class="modal_text"></span></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-lg-12 col-md-12 col-lg-12">
+              <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Observações</h4>
+                <hr>
+                <p>
+                  Se o campo Descrição for informado, 
+                  todos os arquivos selecionados terão a mesma descrição, caso contrário, será utilizado o nome do arquivo.
+                </p>
+                
+              </div>
+            </div>
+            <form id="generic_form_file" name="file_attachment" class="generic_form_file" action="#" >
+              <input type="hidden" name="action">
+              <input type="hidden" name="api">
+
+              <div class="h-90 ">
+                <div class="form_fields row row-fluid"></div>
+              </div>
+            
+              <div class="modal-footer">
+                <button type="button" class="btn bg_willcode_red text-white" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn bg_willcode_blue text-white">Confirmar</button>
+              </div>
+            </form>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-sm-12 file_list_table">
+
+              </div>
+            </div>
+           
+          </div>
+          
+      </div>
+  </div>
+</div>
+<script>
+  
+  docReady(function(){
+    console.log("Carregou modal do arquivo");
+
+    $(document).on("click", ".show_file_list_form", function(){
+      let register_id = $(this).data("id");
+      let object = $(this).data("object");
+      let button = $(this);
+      let current_form = $("#generic_form_file");
+
+      $(".form_fields").html("");
+      $(".file_list_table").html("");
+      let request_parameters = {
+        "api": "file",
+        "action": "get_form",
+        "mode": "attachment",
+      }
+      $.get("/api/", request_parameters, function(data){
+        $(current_form).find(`.form_fields`).html(``);
+        $.each(data.fields, function(k, v){
+          $(current_form).find(`.form_fields`).append(gerar_campo(v));
+        });
+      });
+      let request_parameters_list = {
+        "api": 'file',
+        "action": 'html_table',
+        "object": object,
+        "register_id": register_id,
+        "summary": true
+      }
+      console.table(request_parameters_list)
+      $.get("/api/", request_parameters_list, function(data){
+        if ( data.html )
+          $(".file_list_table").html(data.html);
+
+      }).done(function(){
+
+        let form = $("#form_modal_file_list").find("form");
+        
+        $(form).find(":input[name='object']").val(object).prop("readonly", true);
+        $(form).find(":input[name='register_id']").val(register_id).prop("readonly", true);
+        $(form).find(":input[name='type']").val("attachment").prop("readonly", true);
+        $(form).find(":input[name='api']").val("file").prop("readonly", true);
+      
+      });
+     
+
+    });
+
+    $("form[name='file_attachment']").on('submit', function(e){
+      console.warn($(this).serialize())
+      let form_name = $(this).attr("name");
+      e.preventDefault();
+      console.log(this);
+
+      let formdata = new FormData($(`form[name='file_attachment']`)[0]);
+      formdata.append("api", 'file');
+      formdata.append('action', 'create_attachment');
+
+      let file_list = jQuery('#file')[0].files;
+
+      if ( file_list.length > 1 ){
+        formdata.delete("file");
+        jQuery.each(file_list, function (i, file) {
+          formdata.append('file_' + i , file);
+        });
+      }
+
+      
+      console.log(formdata);
+      let request_parameters = {
+        "form_data": formdata,
+        "type": "POST",
+        "link": "/api/",
+        //"link": "/api/?api=file&action=create_attachment",
+        "return_element": ".file_list_table",
+        //"action": "create_attachment",
+        //"api": "file"
+      }
+      Swal.fire({
+        title: "Incluir Anexo?",
+        html: "O arquivo será anexado ao registro atual",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed) {             
+          custom_ajax(request_parameters);
+          $("form[name='file_attachment']").find(":input[name='file']").val(null);
+          $("form[name='file_attachment']").find(":input[name='description']").val("");
+          clear_files();
+        }
+      });
+
+    })
+  })
+
+</script>
+<style>
+  .thumbnail { 
+    /*
+    top:-50px; 
+    left:-35px;
+     
+    display:block; 
+    z-index:999; 
+    */
+    cursor: pointer; 
+    -webkit-transition-property: all; 
+    -webkit-transition-duration: 0.3s; 
+    -webkit-transition-timing-function: ease; 
+  } 
+
+  /*change the number below to scale to the appropriate size*/ 
+  .thumbnail:hover { 
+    transform: scale(7); 
+  }
+
+</style>
+<script>
+  function clear_files(){
+    $('.file-preview').empty();
+    $('.form-control-file').val('');
+  }
+  docReady(function(){
+    $(document).ready(function() {
+      $(document).on('change', '.form-control-file', function() {
+          const files = $(this).prop('files');
+          handleFiles(files, $(this).siblings('.file-preview'));
+      });
+
+      $(document).on('dragover', '.dropzone', function(e) {
+          e.preventDefault();
+          $(this).addClass('dragover');
+      });
+
+      $(document).on('dragleave', '.dropzone', function() {
+          $(this).removeClass('dragover');
+      });
+
+      $(document).on('drop', '.dropzone', function(e) {
+          e.preventDefault();
+          $(this).removeClass('dragover');
+
+          const files = e.originalEvent.dataTransfer.files;
+          const fileInput = $(this).siblings('.form-control-file');
+          fileInput.prop('files', files); // Atualiza o valor do input de arquivo com os arquivos do drop
+          const filePreview = $(this).siblings('.file-preview');
+          handleFiles(files, filePreview);
+      });
+
+      $(document).on('click', '.dropzone', function() {
+          const fileInput = $(this).siblings('.form-control-file');
+          fileInput.click();
+      });
+
+      function handleFiles(files, filePreview) {
+          $.each(files, function(index, file) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  const preview = `
+                      <div class="file-preview-item">
+                          <img src="${e.target.result}">
+                          <span>${file.name}</span>
+                          <span class="ml-auto remove-btn">Remover</span>
+                      </div>
+                  `;
+                  filePreview.append(preview);
+              };
+              reader.readAsDataURL(file);
+          });
+      }
+
+      $(document).on('click', '.remove-btn', function() {
+          $(this).closest('.file-preview-item').remove();
+      });
+
+      $(document).on('click', '#clearPreview', function() {
+        clear_files();
+      });
+    });
+
+  });
+</script>

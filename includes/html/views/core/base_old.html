@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Willcode Tech">
+    <title>AAA {_page_title}</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="/assets/plugins/datatables/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/plugins/bootstrap5/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/plugins/sweetalert2/sweetalert2.min.css"/>
+    <meta name="theme-color" content="#712cf9">
+ 
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/dashboard.css" rel="stylesheet">
+    <link href="/assets/css/app.css" rel="stylesheet">
+  </head>
+  <body class="bg_light_gray" >
+    <header class="navbar navbar-dark sticky-top bg-secondary flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">{_page_header}</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </header>
+
+    <div class="container-fluid">
+      <div class="row">
+
+        <!-- sidebar menu -->
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse" class="bg_light_gray">
+
+          <div class="position-sticky pt-3 sidebar-sticky">
+            <ul class="nav flex-column">           
+              {_page_menu}
+            </ul>
+          </div>
+
+        </nav>
+        <!-- end siderbar menu -->
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <div class="row">
+            <div class="col-12"><hr>
+              <h3>
+                {_page_subtitle}
+                <a href="#" class="btn btn-sm bg-secondary text-white" id="btn_create" >Adicionar</a>
+              </h3>
+              <div class="">
+                {_page_content}
+              </div>
+
+              <!--
+              <div class="modal fade modal-lg" id="modal_form_contrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Cadastro de Contrato</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="contrato" name="contrato" class="form form-group form-sm" >
+                        
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-primary btn_submit_form" id="btn_submit_form" data-form_id="contrato">Confirmar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <br>
+              <br>
+              <hr>
+              <div class="modal fade modal-lg" id="modal_resumo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Cadastro de Contrato</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="resumos">
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            -->
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script type="text/javascript" src="/assets/plugins/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/assets/plugins/datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script type="text/javascript" src="/assets/js/controller/html.js"></script>
+    <script type="text/javascript" src="/assets/js/app.js"></script>
+    <script src="/assets/plugins/feather/feather.js"></script>
+
+    <script>
+      feather.replace();
+    </script>
+    {_page_custom_js_scripts}
+    
+  </body>
+
+</html>
